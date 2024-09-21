@@ -8,6 +8,8 @@
 import UIKit
 
 class ViewController: UIViewController {
+    
+    let accel = Accel()
 
     // MARK: - Spotify Authorization & Configuration
     var responseCode: String? {
@@ -70,6 +72,7 @@ class ViewController: UIViewController {
     let trackLabel = UILabel()
     let playPauseButton = UIButton(type: .system)
     let signOutButton = UIButton(type: .system)
+    let startRun = UIButton(type: .system)
     
     var tempoTrackDictionary: [Double: String] = [:]
     
@@ -114,6 +117,12 @@ class ViewController: UIViewController {
     }
 
     // MARK: - Actions
+    @objc func startTrackingBPM(_ button:UIButton) {
+        accel.startTracking()
+    }
+    
+    
+    
     @objc func didTapPauseOrPlay(_ button: UIButton, inputTempo: Double) {
         if let lastPlayerState = lastPlayerState, lastPlayerState.isPaused {
             appRemote.playerAPI?.resume(nil)
@@ -180,6 +189,13 @@ extension ViewController {
         signOutButton.setTitle("Sign out", for: .normal)
         signOutButton.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .bold)
         signOutButton.addTarget(self, action: #selector(didTapSignOut(_:)), for: .touchUpInside)
+        
+        
+        startRun.translatesAutoresizingMaskIntoConstraints = false
+        startRun.setTitle("Start Run", for: .normal)
+        startRun.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .bold)
+        startRun.addTarget(self, action: #selector(startTrackingBPM), for: .touchUpInside)
+        
     }
 
     func layout() {
@@ -190,6 +206,7 @@ extension ViewController {
         stackView.addArrangedSubview(trackLabel)
         stackView.addArrangedSubview(playPauseButton)
         stackView.addArrangedSubview(signOutButton)
+        stackView.addArrangedSubview(startRun)
 
         view.addSubview(stackView)
 
@@ -207,6 +224,7 @@ extension ViewController {
             imageView.isHidden = false
             trackLabel.isHidden = false
             playPauseButton.isHidden = false
+            startRun.isHidden = false
             getSortedTracks()
             tempo = 90
             startIncreasingTempo()
@@ -219,6 +237,7 @@ extension ViewController {
             imageView.isHidden = true
             trackLabel.isHidden = true
             playPauseButton.isHidden = true
+            startRun.isHidden = true
         }
     }
 }
@@ -460,13 +479,14 @@ extension ViewController {
         tempoIncrementTimer?.invalidate()
 
         // Schedule a timer to increase tempo every 10 seconds
-        tempoIncrementTimer = Timer.scheduledTimer(withTimeInterval: 10.0, repeats: true) { [weak self] _ in
+        tempoIncrementTimer = Timer.scheduledTimer(withTimeInterval: 6.0, repeats: true) { [weak self] _ in
             guard let self = self else { return }
             // Increase tempo by 20
-            if let currentTempo = self.tempo {
-                self.tempo = currentTempo + 5
-                print("Increased tempo to: \(self.tempo!)")
-            }
+//            if let currentTempo = self.tempo {
+//                self.tempo = currentTempo + 5
+//                print("Increased tempo to: \(self.tempo!)")
+//            }
+            self.tempo = Double(accel.tempo)
         }
     }
     
