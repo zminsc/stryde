@@ -16,6 +16,8 @@
 		B152651C2C9F244B00AF2329 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B152651B2C9F244B00AF2329 /* Constants.swift */; };
 		B152651F2C9F265800AF2329 /* SpotifyiOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B152651D2C9F25EF00AF2329 /* SpotifyiOS.framework */; };
 		B15265202C9F265800AF2329 /* SpotifyiOS.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B152651D2C9F25EF00AF2329 /* SpotifyiOS.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		B6C93AE72C9F625B00EC0BEB /* APICalls.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C93AE62C9F625800EC0BEB /* APICalls.swift */; };
+		B6C93AE92C9F626D00EC0BEB /* Accel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C93AE82C9F626B00EC0BEB /* Accel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -44,6 +46,8 @@
 		B15265162C9F21E800AF2329 /* Stryde-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Stryde-Bridging-Header.h"; sourceTree = "<group>"; };
 		B152651B2C9F244B00AF2329 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		B152651D2C9F25EF00AF2329 /* SpotifyiOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SpotifyiOS.framework; sourceTree = "<group>"; };
+		B6C93AE62C9F625800EC0BEB /* APICalls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APICalls.swift; sourceTree = "<group>"; };
+		B6C93AE82C9F626B00EC0BEB /* Accel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Accel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,6 +82,8 @@
 		B12182032C9E94DD00090D8D /* Stryde */ = {
 			isa = PBXGroup;
 			children = (
+				B6C93AE82C9F626B00EC0BEB /* Accel.swift */,
+				B6C93AE62C9F625800EC0BEB /* APICalls.swift */,
 				B15265152C9F219B00AF2329 /* Files */,
 				B12182062C9E94DD00090D8D /* SceneDelegate.swift */,
 				B12182082C9E94DD00090D8D /* ViewController.swift */,
@@ -174,7 +180,9 @@
 			files = (
 				B12182092C9E94DD00090D8D /* ViewController.swift in Sources */,
 				B12182052C9E94DD00090D8D /* AppDelegate.swift in Sources */,
+				B6C93AE92C9F626D00EC0BEB /* Accel.swift in Sources */,
 				B12182072C9E94DD00090D8D /* SceneDelegate.swift in Sources */,
+				B6C93AE72C9F625B00EC0BEB /* APICalls.swift in Sources */,
 				B152651C2C9F244B00AF2329 /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
