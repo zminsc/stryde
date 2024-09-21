@@ -21,6 +21,7 @@ class ViewController: UIViewController {
                 DispatchQueue.main.async {
                     self.appRemote.connectionParameters.accessToken = accessToken
                     self.appRemote.connect()
+
                 }
             }
         }
@@ -58,6 +59,8 @@ class ViewController: UIViewController {
     }()
 
     private var lastPlayerState: SPTAppRemotePlayerState?
+    
+
 
     // MARK: - Subviews
     let stackView = UIStackView()
@@ -67,6 +70,20 @@ class ViewController: UIViewController {
     let trackLabel = UILabel()
     let playPauseButton = UIButton(type: .system)
     let signOutButton = UIButton(type: .system)
+    
+    var tempoTrackDictionary: [Double: String] = [:]
+    
+    var tempo: Double? {
+        didSet {
+            // Whenever the tempo changes, play the song with the closest tempo
+            if let newTempo = tempo {
+                playSongClosestTo(tempo: newTempo)
+            }
+        }
+    }
+    
+    var tempoIncrementTimer: Timer?
+
 
     // MARK: App Life Cycle
     override func viewDidLoad() {
@@ -84,6 +101,7 @@ class ViewController: UIViewController {
         if lastPlayerState?.track.uri != playerState.track.uri {
             fetchArtwork(for: playerState.track)
         }
+        
         lastPlayerState = playerState
         trackLabel.text = playerState.track.name
 
@@ -96,11 +114,14 @@ class ViewController: UIViewController {
     }
 
     // MARK: - Actions
-    @objc func didTapPauseOrPlay(_ button: UIButton) {
+    @objc func didTapPauseOrPlay(_ button: UIButton, inputTempo: Double) {
         if let lastPlayerState = lastPlayerState, lastPlayerState.isPaused {
             appRemote.playerAPI?.resume(nil)
+            startIncreasingTempo()
+            
         } else {
             appRemote.playerAPI?.pause(nil)
+            stopIncreasingTempo()
         }
     }
 
@@ -186,6 +207,10 @@ extension ViewController {
             imageView.isHidden = false
             trackLabel.isHidden = false
             playPauseButton.isHidden = false
+            getSortedTracks()
+            tempo = 90
+            startIncreasingTempo()
+            
         }
         else { // show login
             signOutButton.isHidden = true
@@ -225,7 +250,7 @@ extension ViewController: SPTAppRemoteDelegate {
 // MARK: - SPTAppRemotePlayerAPIDelegate
 extension ViewController: SPTAppRemotePlayerStateDelegate {
     func playerStateDidChange(_ playerState: SPTAppRemotePlayerState) {
-        debugPrint("Spotify Track name: %@", playerState.track.name)
+        debugPrint("Spotify Track name:", playerState.track.name)
         update(playerState: playerState)
     }
 }
@@ -308,5 +333,145 @@ extension ViewController {
                 self?.update(playerState: playerState)
             }
         })
+    }
+}
+
+
+// MARK: ~ Get Track Information
+extension ViewController {
+    
+    
+    func fetchAudioFeatures(for trackId: String, completion: @escaping ([String: Any]?, Error?) -> Void) {
+        let url = URL(string: "https://api.spotify.com/v1/audio-features/\(trackId)")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        
+        // Set the Authorization header with the access token
+        guard let accessToken = appRemote.connectionParameters.accessToken else {
+            completion(nil, NSError(domain: "com.easyplay", code: 401, userInfo: [NSLocalizedDescriptionKey: "Access token is missing."]))
+            return
+        }
+        
+        request.addValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+        
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let data = data,                              // Ensure there is data
+                  let response = response as? HTTPURLResponse,  // Ensure we have a valid HTTP response
+                  (200 ..< 300) ~= response.statusCode,         // Ensure status code is 2XX
+                  error == nil else {                           // Ensure no error occurred
+                completion(nil, error)
+                return
+            }
+            
+            // Try to decode the JSON response
+            if let audioFeatures = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
+                completion(audioFeatures, nil)
+            } else {
+                completion(nil, NSError(domain: "com.easyplay", code: 500, userInfo: [NSLocalizedDescriptionKey: "Failed to parse audio features."]))
+            }
+        }
+        task.resume()
+    }
+    
+    // Fetch audio features for multiple tracks and sort by tempo
+    func fetchAndSortTracksByTempo(uris: [String]) {
+        let dispatchGroup = DispatchGroup()
+        
+        var tempDict: [Double: String] = [:]
+        
+       for uri in uris {
+            dispatchGroup.enter()
+            let trackId = uri.replacingOccurrences(of: "spotify:track:", with: "")
+            fetchAudioFeatures(for: trackId) { audioFeatures, error in
+                if let error = error {
+                    print("Error fetching audio features for URI \(uri): \(error.localizedDescription)")
+                } else if let audioFeatures = audioFeatures, let tempo = audioFeatures["tempo"] as? Double {
+                    tempDict[tempo] = uri
+                }
+                dispatchGroup.leave()
+            }
+        }
+        
+        dispatchGroup.notify(queue: .main) {
+            // Sort the dictionary by tempo and store it in the class property
+            self.tempoTrackDictionary = tempDict.sorted(by: { $0.key < $1.key }).reduce(into: [:]) { $0[$1.key] = $1.value }
+            print("Sorted tempo track dictionary: \(self.tempoTrackDictionary)")
+        }
+        
+        
+    }
+    
+    // Use this method to call the sorted tracks
+    func getSortedTracks() {
+        let trackURIs = [
+            "spotify:track:20I6sIOMTCkB6w7ryavxtO",  // Existing URI
+            "spotify:track:3n3Ppam7vgaVa1iaRUc9Lp",
+            "spotify:track:0VjIjW4GlUZAMYd2vXMi3b",  // Blinding Lights
+            "spotify:track:463CkQjx2JchxjALpP59Gt",  // Levitating
+            "spotify:track:7qiZfU4dY1lWllzX7mPBI3",  // Shape of You
+            "spotify:track:6UelLqGlWMcVH1E5c4H7lY",  // Watermelon Sugar
+            "spotify:track:4iJyoBOLtHqaGxP12qzhQI",  // Peaches
+            "spotify:track:5QO79kh1waicV47BqGRL3g",  // Save Your Tears
+            "spotify:track:3PfIrDoz19wz7qK7tYeu62",  // Don’t Start Now
+            "spotify:track:5wANPM4fQCJwkGd4rN57mH",  // drivers license
+            "spotify:track:5PjdY0CKGZdEuoNab3yDmX",  // Stay
+            "spotify:track:2XU0oxnq2qxCpomAAuJY8K"   // Dance Monkey
+        ]
+        fetchAndSortTracksByTempo(uris: trackURIs)
+    }
+    
+    func playSongClosestTo(tempo inputTempo: Double) {
+        guard let lastPlayerState = lastPlayerState else {
+            print("No player state available.")
+            return
+        }
+
+        // Check if the music is paused
+        if lastPlayerState.isPaused {
+            print("Music is paused, not playing a new song.")
+            return
+        }
+        
+        if let closestTempo = tempoTrackDictionary.keys.min(by: { abs($0 - inputTempo) < abs($1 - inputTempo) }),
+           let uriForClosestTempo = tempoTrackDictionary[closestTempo] {
+            
+            print("Input tempo: ", inputTempo)
+            print("Closest tempp: ", closestTempo)
+            
+            // Check if the new song is the same as the currently playing song
+            if lastPlayerState.track.uri == uriForClosestTempo {
+                print("The song is already playing, not restarting.")
+                return
+            }
+
+            
+            appRemote.playerAPI?.play(uriForClosestTempo, callback: { (success, error) in
+                if let error = error {
+                    print("Error playing track: \(error.localizedDescription)")
+                }
+            })
+        } else {
+            print("No track found with a tempo close to \(inputTempo)")
+        }
+    }
+    
+    func startIncreasingTempo() {
+        // Invalidate any existing timer
+        tempoIncrementTimer?.invalidate()
+
+        // Schedule a timer to increase tempo every 10 seconds
+        tempoIncrementTimer = Timer.scheduledTimer(withTimeInterval: 10.0, repeats: true) { [weak self] _ in
+            guard let self = self else { return }
+            // Increase tempo by 20
+            if let currentTempo = self.tempo {
+                self.tempo = currentTempo + 5
+                print("Increased tempo to: \(self.tempo!)")
+            }
+        }
+    }
+    
+    func stopIncreasingTempo() {
+        tempoIncrementTimer?.invalidate()
+        tempoIncrementTimer = nil
     }
 }
