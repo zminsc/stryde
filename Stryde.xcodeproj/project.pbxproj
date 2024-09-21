@@ -13,7 +13,24 @@
 		B121820C2C9E94DD00090D8D /* Base in Resources */ = {isa = PBXBuildFile; fileRef = B121820B2C9E94DD00090D8D /* Base */; };
 		B121820E2C9E94DE00090D8D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B121820D2C9E94DE00090D8D /* Assets.xcassets */; };
 		B12182112C9E94DE00090D8D /* Base in Resources */ = {isa = PBXBuildFile; fileRef = B12182102C9E94DE00090D8D /* Base */; };
+		B152651C2C9F244B00AF2329 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B152651B2C9F244B00AF2329 /* Constants.swift */; };
+		B152651F2C9F265800AF2329 /* SpotifyiOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B152651D2C9F25EF00AF2329 /* SpotifyiOS.framework */; };
+		B15265202C9F265800AF2329 /* SpotifyiOS.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B152651D2C9F25EF00AF2329 /* SpotifyiOS.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		B15265212C9F265800AF2329 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				B15265202C9F265800AF2329 /* SpotifyiOS.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		B12182012C9E94DD00090D8D /* Stryde.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Stryde.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -24,6 +41,9 @@
 		B121820D2C9E94DE00090D8D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B12182102C9E94DE00090D8D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B12182122C9E94DE00090D8D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B15265162C9F21E800AF2329 /* Stryde-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Stryde-Bridging-Header.h"; sourceTree = "<group>"; };
+		B152651B2C9F244B00AF2329 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		B152651D2C9F25EF00AF2329 /* SpotifyiOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SpotifyiOS.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -31,6 +51,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B152651F2C9F265800AF2329 /* SpotifyiOS.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -42,6 +63,7 @@
 			children = (
 				B12182032C9E94DD00090D8D /* Stryde */,
 				B12182022C9E94DD00090D8D /* Products */,
+				B15265162C9F21E800AF2329 /* Stryde-Bridging-Header.h */,
 			);
 			sourceTree = "<group>";
 		};
@@ -56,15 +78,25 @@
 		B12182032C9E94DD00090D8D /* Stryde */ = {
 			isa = PBXGroup;
 			children = (
-				B12182042C9E94DD00090D8D /* AppDelegate.swift */,
+				B15265152C9F219B00AF2329 /* Files */,
 				B12182062C9E94DD00090D8D /* SceneDelegate.swift */,
 				B12182082C9E94DD00090D8D /* ViewController.swift */,
+				B152651B2C9F244B00AF2329 /* Constants.swift */,
+			);
+			path = Stryde;
+			sourceTree = "<group>";
+		};
+		B15265152C9F219B00AF2329 /* Files */ = {
+			isa = PBXGroup;
+			children = (
+				B152651D2C9F25EF00AF2329 /* SpotifyiOS.framework */,
+				B12182042C9E94DD00090D8D /* AppDelegate.swift */,
 				B121820A2C9E94DD00090D8D /* Main.storyboard */,
 				B121820D2C9E94DE00090D8D /* Assets.xcassets */,
 				B121820F2C9E94DE00090D8D /* LaunchScreen.storyboard */,
 				B12182122C9E94DE00090D8D /* Info.plist */,
 			);
-			path = Stryde;
+			name = Files;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -77,6 +109,7 @@
 				B12181FD2C9E94DD00090D8D /* Sources */,
 				B12181FE2C9E94DD00090D8D /* Frameworks */,
 				B12181FF2C9E94DD00090D8D /* Resources */,
+				B15265212C9F265800AF2329 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -99,6 +132,7 @@
 				TargetAttributes = {
 					B12182002C9E94DD00090D8D = {
 						CreatedOnToolsVersion = 15.4;
+						LastSwiftMigration = 1540;
 					};
 				};
 			};
@@ -141,6 +175,7 @@
 				B12182092C9E94DD00090D8D /* ViewController.swift in Sources */,
 				B12182052C9E94DD00090D8D /* AppDelegate.swift in Sources */,
 				B12182072C9E94DD00090D8D /* SceneDelegate.swift in Sources */,
+				B152651C2C9F244B00AF2329 /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -218,7 +253,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -275,7 +310,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -290,9 +325,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = VAP8J47F2Y;
+				DEVELOPMENT_TEAM = 8LG3532T3K;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Stryde",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Stryde/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -305,9 +345,12 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = stevenchang.Stryde;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_BUNDLE_IDENTIFIER = "stevenchang.Stryde-sa";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "Stryde-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -318,9 +361,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = VAP8J47F2Y;
+				DEVELOPMENT_TEAM = 8LG3532T3K;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Stryde",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Stryde/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -333,9 +381,11 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = stevenchang.Stryde;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_BUNDLE_IDENTIFIER = "stevenchang.Stryde-sa";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "Stryde-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
