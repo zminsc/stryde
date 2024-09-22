@@ -11,12 +11,15 @@ class FirstScreen: UIViewController {
     
     let nextButton = UIButton()
     let titleLabel = UILabel()
+    let runningStickman = UIImageView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setupTitleLabel()
         setupButton()
+        setupStickman()
+        
         navigationController?.navigationBar.prefersLargeTitles = true
         
         // Bottom Curve Shape
@@ -52,19 +55,20 @@ class FirstScreen: UIViewController {
         view.layer.insertSublayer(gradientLayer, at: 0)
 
         // Do any additional setup after loading the view.
+        view.bringSubviewToFront(runningStickman)
     }
     
     func setupTitleLabel() {
         view.addSubview(titleLabel)
         
         titleLabel.text = "STRYDE"
-        titleLabel.font = UIFont.systemFont(ofSize: 40, weight: .bold)
+        titleLabel.font = UIFont.systemFont(ofSize: 60, weight: .bold)
         titleLabel.textColor = UIColor(red: 139/255, green: 69/255, blue: 19/255, alpha: 1.0) // Custom brown
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50)
+            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10)
         ])
     }
     
@@ -89,6 +93,22 @@ class FirstScreen: UIViewController {
                 nextButton.heightAnchor.constraint(equalToConstant: 50),
             ])
         }
+    
+    func setupStickman() {
+        // Assuming the image is named "runningPerson.png" in your asset catalog
+        runningStickman.image = UIImage(named: "running-stickman")
+        runningStickman.contentMode = .scaleAspectFit
+        runningStickman.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(runningStickman)
+            
+        // Constraints to position the image on top of the bottomCurveView
+        NSLayoutConstraint.activate([
+            runningStickman.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            runningStickman.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -250),
+            runningStickman.widthAnchor.constraint(equalToConstant: 120),
+            runningStickman.heightAnchor.constraint(equalToConstant: 120)
+        ])
+    }
     
     @objc func goToNextScreen() {
         let nextScreen = ViewController()
