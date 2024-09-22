@@ -11,12 +11,16 @@ class FirstScreen: UIViewController {
     
     let nextButton = UIButton()
     let titleLabel = UILabel()
+    let runningStickman = UIImageView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .white
         
         setupTitleLabel()
         setupButton()
+        setupStickman()
+        
         navigationController?.navigationBar.prefersLargeTitles = true
         
         // Bottom Curve Shape
@@ -37,34 +41,22 @@ class FirstScreen: UIViewController {
         bottomCurveView.layer.cornerRadius = 400
         bottomCurveView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         bottomCurveView.layer.masksToBounds = true
-        
-        
-        // Background
-        
-        let gradientLayer = CAGradientLayer()
-        gradientLayer.colors = [
-            UIColor(red: 246/255, green: 244/255, blue: 210/255, alpha: 1.0).cgColor,  // #F6F4D2
-            UIColor(red: 203/255, green: 223/255, blue: 189/255, alpha: 1.0).cgColor   // #CBDFBD
-        ]
-        gradientLayer.startPoint = CGPoint(x: 0.0, y: 0.0)
-        gradientLayer.endPoint = CGPoint(x: 1.0, y: 1.0)
-        gradientLayer.frame = view.bounds
-        view.layer.insertSublayer(gradientLayer, at: 0)
 
         // Do any additional setup after loading the view.
+        view.bringSubviewToFront(runningStickman)
     }
     
     func setupTitleLabel() {
         view.addSubview(titleLabel)
         
         titleLabel.text = "STRYDE"
-        titleLabel.font = UIFont.systemFont(ofSize: 40, weight: .bold)
+        titleLabel.font = UIFont.systemFont(ofSize: 60, weight: .bold)
         titleLabel.textColor = UIColor(red: 139/255, green: 69/255, blue: 19/255, alpha: 1.0) // Custom brown
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50)
+            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10)
         ])
     }
     
@@ -89,6 +81,22 @@ class FirstScreen: UIViewController {
                 nextButton.heightAnchor.constraint(equalToConstant: 50),
             ])
         }
+    
+    func setupStickman() {
+        // Assuming the image is named "runningPerson.png" in your asset catalog
+        runningStickman.image = UIImage(named: "running-stickman")
+        runningStickman.contentMode = .scaleAspectFit
+        runningStickman.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(runningStickman)
+            
+        // Constraints to position the image on top of the bottomCurveView
+        NSLayoutConstraint.activate([
+            runningStickman.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            runningStickman.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -240),
+            runningStickman.widthAnchor.constraint(equalToConstant: 130),
+            runningStickman.heightAnchor.constraint(equalToConstant: 130)
+        ])
+    }
     
     @objc func goToNextScreen() {
         let nextScreen = SecondScreen()
