@@ -15,6 +15,7 @@ class FirstScreen: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .white
         
         setupTitleLabel()
         setupButton()
@@ -40,19 +41,6 @@ class FirstScreen: UIViewController {
         bottomCurveView.layer.cornerRadius = 400
         bottomCurveView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         bottomCurveView.layer.masksToBounds = true
-        
-        
-        // Background
-        
-        let gradientLayer = CAGradientLayer()
-        gradientLayer.colors = [
-            UIColor(red: 246/255, green: 244/255, blue: 210/255, alpha: 1.0).cgColor,  // #F6F4D2
-            UIColor(red: 203/255, green: 223/255, blue: 189/255, alpha: 1.0).cgColor   // #CBDFBD
-        ]
-        gradientLayer.startPoint = CGPoint(x: 0.0, y: 0.0)
-        gradientLayer.endPoint = CGPoint(x: 1.0, y: 1.0)
-        gradientLayer.frame = view.bounds
-        view.layer.insertSublayer(gradientLayer, at: 0)
 
         // Do any additional setup after loading the view.
         view.bringSubviewToFront(runningStickman)
@@ -104,9 +92,9 @@ class FirstScreen: UIViewController {
         // Constraints to position the image on top of the bottomCurveView
         NSLayoutConstraint.activate([
             runningStickman.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            runningStickman.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -250),
-            runningStickman.widthAnchor.constraint(equalToConstant: 120),
-            runningStickman.heightAnchor.constraint(equalToConstant: 120)
+            runningStickman.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -240),
+            runningStickman.widthAnchor.constraint(equalToConstant: 130),
+            runningStickman.heightAnchor.constraint(equalToConstant: 130)
         ])
     }
     
