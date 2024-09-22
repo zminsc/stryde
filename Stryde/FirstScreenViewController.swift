@@ -98,8 +98,10 @@ class FirstScreenViewController: UIViewController {
     }
     
     @objc func goToNextScreen() {
-        let nextViewController = SecondScreenViewController()
-        nextViewController.title = "Sign Up"
-        navigationController?.pushViewController(nextViewController, animated: true)
+        if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
+            let rootViewController = sceneDelegate.rootViewController
+            rootViewController.title = "Sign Up"
+            navigationController?.pushViewController(rootViewController, animated: true)
+        }
     }
 }

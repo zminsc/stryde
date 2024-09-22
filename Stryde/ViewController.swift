@@ -102,6 +102,14 @@ class ViewController: UIViewController, PlaylistSelectionDelegate {
     let startRun = UIButton(type: .system)
     let changePlaylist = UIButton(type: .system)
     
+    let firstNameLabel = UILabel()
+    let lastNameLabel = UILabel()
+    let moodLabel = UILabel()
+    
+    let firstNameTextView = UITextView()
+    let lastNameTextView = UITextView()
+    let moodTextView = UITextView()
+    
     var tempoTrackDictionary: [Double: String] = [:]
     
     var tempo: Double? {
@@ -148,6 +156,7 @@ class ViewController: UIViewController, PlaylistSelectionDelegate {
             print("tff")
         }
         
+        setupKeyboardDismissRecognizer()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -219,56 +228,94 @@ class ViewController: UIViewController, PlaylistSelectionDelegate {
 // MARK: Style & Layout
 extension ViewController {
     func style() {
+        view.backgroundColor = UIColor(red: 246/255.0, green: 244/255.0, blue: 210/255.0, alpha: 1.0)
+        
         navigationItem.hidesBackButton = true
         
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
         stackView.spacing = 20
         stackView.alignment = .center
-
-        connectLabel.translatesAutoresizingMaskIntoConstraints = false
-        connectLabel.text = "Connect your Spotify account"
-        connectLabel.font = UIFont.preferredFont(forTextStyle: .title3)
-        connectLabel.textColor = .systemGreen
+        
+        firstNameLabel.translatesAutoresizingMaskIntoConstraints = false
+        firstNameLabel.text = "First Name"
+        firstNameLabel.font = UIFont.systemFont(ofSize: 16)
+        
+        lastNameLabel.translatesAutoresizingMaskIntoConstraints = false
+        lastNameLabel.text = "Last Name"
+        lastNameLabel.font = UIFont.systemFont(ofSize: 16)
+        
+        moodLabel.translatesAutoresizingMaskIntoConstraints = false
+        moodLabel.text = "Mood"
+        moodLabel.font = UIFont.systemFont(ofSize: 16)
+        
+        firstNameTextView.translatesAutoresizingMaskIntoConstraints = false
+        firstNameTextView.layer.borderWidth = 1
+        firstNameTextView.layer.borderColor = UIColor.gray.cgColor
+        firstNameTextView.layer.cornerRadius = 5
+        firstNameTextView.font = UIFont.systemFont(ofSize: 18)
+        
+        lastNameTextView.translatesAutoresizingMaskIntoConstraints = false
+        lastNameTextView.layer.borderWidth = 1
+        lastNameTextView.layer.borderColor = UIColor.gray.cgColor
+        lastNameTextView.layer.cornerRadius = 5
+        lastNameTextView.font = UIFont.systemFont(ofSize: 18)
+        
+        moodTextView.translatesAutoresizingMaskIntoConstraints = false
+        moodTextView.layer.borderWidth = 1
+        moodTextView.layer.borderColor = UIColor.gray.cgColor
+        moodTextView.layer.cornerRadius = 5
+        moodTextView.font = UIFont.systemFont(ofSize: 18)
 
         connectButton.translatesAutoresizingMaskIntoConstraints = false
-        connectButton.configuration = .filled()
-        connectButton.setTitle("Continue with Spotify", for: [])
-        connectButton.titleLabel?.font = UIFont.preferredFont(forTextStyle: .title3)
-        connectButton.addTarget(self, action: #selector(didTapConnect), for: .primaryActionTriggered)
+        connectButton.setTitle("Connect to Spotify", for: .normal)
+        connectButton.backgroundColor = UIColor(red: 106/255, green: 176/255, blue: 76/255, alpha: 1.0)
+        connectButton.layer.cornerRadius = 8
+        connectButton.addTarget(self, action: #selector(didTapConnect), for: .touchUpInside)
+        connectButton.setTitleColor(.white, for: .normal)
 
+        // MARK: - Play View
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
 
         trackLabel.translatesAutoresizingMaskIntoConstraints = false
         trackLabel.font = UIFont.preferredFont(forTextStyle: .body)
         trackLabel.textAlignment = .center
+        trackLabel.textColor = UIColor(red: 164/255, green: 74/255, blue: 63/255, alpha: 1)
 
         playPauseButton.translatesAutoresizingMaskIntoConstraints = false
         playPauseButton.addTarget(self, action: #selector(didTapPauseOrPlay), for: .primaryActionTriggered)
+        playPauseButton.tintColor = UIColor(red: 164/255, green: 74/255, blue: 63/255, alpha: 1)
 
         signOutButton.translatesAutoresizingMaskIntoConstraints = false
         signOutButton.setTitle("Sign out", for: .normal)
         signOutButton.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .bold)
         signOutButton.addTarget(self, action: #selector(didTapSignOut(_:)), for: .touchUpInside)
-        
+        signOutButton.setTitleColor(UIColor(red: 164/255, green: 74/255, blue: 63/255, alpha: 1), for: .normal)
         
         startRun.translatesAutoresizingMaskIntoConstraints = false
         startRun.setTitle("Start Run", for: .normal)
         startRun.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .bold)
         startRun.addTarget(self, action: #selector(startTrackingBPM), for: .touchUpInside)
+        startRun.setTitleColor(UIColor(red: 164/255, green: 74/255, blue: 63/255, alpha: 1), for: .normal)
         
         changePlaylist.translatesAutoresizingMaskIntoConstraints = false
         changePlaylist.setTitle("Change Playlist", for: .normal)
         changePlaylist.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .bold)
         changePlaylist.addTarget(self, action: #selector(reselectPlaylist), for: .touchUpInside)
-        
+        changePlaylist.setTitleColor(UIColor(red: 164/255, green: 74/255, blue: 63/255, alpha: 1), for: .normal)
     }
 
     func layout() {
-
-        stackView.addArrangedSubview(connectLabel)
-        stackView.addArrangedSubview(connectButton)
+        
+        view.addSubview(firstNameLabel)
+        view.addSubview(firstNameTextView)
+        view.addSubview(lastNameLabel)
+        view.addSubview(lastNameTextView)
+        view.addSubview(moodLabel)
+        view.addSubview(moodTextView)
+        view.addSubview(connectButton)
+        
         stackView.addArrangedSubview(imageView)
         stackView.addArrangedSubview(trackLabel)
         stackView.addArrangedSubview(playPauseButton)
@@ -276,8 +323,43 @@ extension ViewController {
         stackView.addArrangedSubview(startRun)
         stackView.addArrangedSubview(changePlaylist)
 
-        view.addSubview(stackView)
 
+        view.addSubview(stackView)
+        
+        NSLayoutConstraint.activate([
+            firstNameLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
+            firstNameLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            firstNameLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            
+            firstNameTextView.topAnchor.constraint(equalTo: firstNameLabel.bottomAnchor, constant: 8),
+            firstNameTextView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            firstNameTextView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            firstNameTextView.heightAnchor.constraint(equalToConstant: 40),
+            
+            lastNameLabel.topAnchor.constraint(equalTo: firstNameTextView.bottomAnchor, constant: 20),
+            lastNameLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            lastNameLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            
+            lastNameTextView.topAnchor.constraint(equalTo: lastNameLabel.bottomAnchor, constant: 8),
+            lastNameTextView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            lastNameTextView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            lastNameTextView.heightAnchor.constraint(equalToConstant: 40),
+            
+            moodLabel.topAnchor.constraint(equalTo: lastNameTextView.bottomAnchor, constant: 20),
+            moodLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            moodLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            
+            moodTextView.topAnchor.constraint(equalTo: moodLabel.bottomAnchor, constant: 8),
+            moodTextView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            moodTextView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            moodTextView.heightAnchor.constraint(equalToConstant: 40),
+            
+            connectButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
+            connectButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 100),
+            connectButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -100),
+            connectButton.heightAnchor.constraint(equalToConstant: 50)
+        ])
+        
         NSLayoutConstraint.activate([
             stackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             stackView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
@@ -287,8 +369,8 @@ extension ViewController {
     func updateViewBasedOnConnected() {
         if appRemote.isConnected == true {
             connectButton.isHidden = true
-            signOutButton.isHidden = false
             connectLabel.isHidden = true
+            signOutButton.isHidden = false
             imageView.isHidden = false
             trackLabel.isHidden = false
             playPauseButton.isHidden = false
@@ -298,16 +380,31 @@ extension ViewController {
             tempo = 90
             startIncreasingTempo()
             
+            firstNameLabel.isHidden = true
+            lastNameLabel.isHidden = true
+            moodLabel.isHidden = true
+            firstNameTextView.isHidden = true
+            lastNameTextView.isHidden = true
+            moodTextView.isHidden = true
+            title = ""
         }
         else { // show login
-            signOutButton.isHidden = true
             connectButton.isHidden = false
             connectLabel.isHidden = false
+            signOutButton.isHidden = true
             imageView.isHidden = true
             trackLabel.isHidden = true
             playPauseButton.isHidden = true
             startRun.isHidden = true
             changePlaylist.isHidden = true
+            
+            firstNameLabel.isHidden = false
+            lastNameLabel.isHidden = false
+            moodLabel.isHidden = false
+            firstNameTextView.isHidden = false
+            lastNameTextView.isHidden = false
+            moodTextView.isHidden = false
+            title = "Sign Up"
         }
     }
 }
@@ -680,4 +777,16 @@ extension ViewController {
     }
     
     
+}
+
+extension ViewController {
+    private func setupKeyboardDismissRecognizer() {
+        let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
+    }
+
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
+    }
 }
