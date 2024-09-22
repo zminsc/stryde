@@ -4,6 +4,10 @@ Research has demonstrated that music when synchronized with a person's running c
 
 Our system leverages the smart devices that people wear/possess while running to measure their running cadence. Once we process and clean these metrics, we wire them to a mobile application. This app links the user's Spotify account with our system and allows the user to pick between their various playlists (ideally with songs that vary in tempo!) that they want to listen to on their run. Then, once the user starts running, the application plays songs that matches the user's running tempo in real time.
 
+## Demo
+
+[![Stryde Demo Video](https://img.youtube.com/vi/3voHB-i6Xtw/0.jpg)](https://www.youtube.com/watch?v=3voHB-i6Xtw)
+
 ## How We Built Stryde
 
 We decided to leverage the IMU sensor on the iPhone to measure the user's cadence. We leverage the fact that many people run with either their phone or their Apple Watch to track their workouts, and both of these devices have IMU sensors that we can access. Although the current system is built for the iPhone, adding watch support should be relatively straightforward. We use a python backend server to process the raw signal data received from the IMU and compute the user's running cadence using Fourier transforms. On the mobile app, we use the [Spotify API](https://developer.spotify.com/documentation/web-api) to access the user's playlists, find the tempo of the songs, and play songs that match the user's running pace in real time. Our app frontend is developed using [UIKit](https://developer.apple.com/documentation/uikit/). We also leveraged the [Cerebras AI API](http://cerebras.ai) to allow users the option to play music via an unstructured chat request (i.e. "I want to feel positive on this run!"), rather than select playlists on their own.
