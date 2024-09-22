@@ -209,7 +209,7 @@ class ViewController: UIViewController, PlaylistSelectionDelegate {
         }
         
         lastPlayerState = playerState
-        trackLabel.text = playerState.track.name
+        trackLabel.text = truncateTextIfNeeded(playerState.track.name, maxLength: 27)
 
         let configuration = UIImage.SymbolConfiguration(pointSize: 40, weight: .bold, scale: .large)
         if playerState.isPaused {
@@ -263,6 +263,15 @@ class ViewController: UIViewController, PlaylistSelectionDelegate {
             controller.addAction(action)
             self.present(controller, animated: true)
         }
+    }
+    
+    private func truncateTextIfNeeded(_ text: String, maxLength: Int) -> String {
+        if text.count > maxLength {
+            let index = text.index(text.startIndex, offsetBy: maxLength - 3) // Adjust for ellipses
+            let truncated = text.prefix(upTo: index)
+            return "\(truncated)..."
+        }
+        return text
     }
 }
 
