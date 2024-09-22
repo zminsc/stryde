@@ -137,8 +137,9 @@ class ViewController: UIViewController, PlaylistSelectionDelegate {
     }
     
     var tempoIncrementTimer: Timer?
-        
-    
+    var updateTimer: Timer?
+    var secondsElapsed = 0
+
     func didSelectPlaylist(_ playlistId: String) {
             // Fetch and sort tracks by tempo when the playlist is selected
         fetchTracksFromPlaylist(playlistId: playlistId)
@@ -229,18 +230,24 @@ class ViewController: UIViewController, PlaylistSelectionDelegate {
         showPlaylistSelection()
     }
     
+    @objc func updateDurationLabel() {
+        secondsElapsed += 1
+        let minutes = secondsElapsed / 60
+        let seconds = secondsElapsed % 60
+        durationAmountLabel.text = String(format: "%02d:%02d", minutes, seconds)
+    }
     
-    
-    @objc func didTapPauseOrPlay(_ button: UIButton, inputTempo: Double) {
+    @objc func didTapPauseOrPlay(_ button: UIButton) {
         startTrackingBPM()
         
         if let lastPlayerState = lastPlayerState, lastPlayerState.isPaused {
             appRemote.playerAPI?.resume(nil)
             startIncreasingTempo()
-            
+            startTimer()
         } else {
             appRemote.playerAPI?.pause(nil)
             stopIncreasingTempo()
+            stopTimer()
         }
     }
 
@@ -371,7 +378,7 @@ extension ViewController {
         paceLabel.textColor = UIColor(red: 164/255, green: 74/255, blue: 63/255, alpha: 1)
         paceLabel.textAlignment = .center
         
-        durationAmountLabel.text = "15:10"
+        durationAmountLabel.text = "00:00"
         durationAmountLabel.translatesAutoresizingMaskIntoConstraints = false
         durationAmountLabel.font = UIFont.systemFont(ofSize: 24, weight: .medium)
         durationAmountLabel.textColor = UIColor(red: 164/255, green: 74/255, blue: 63/255, alpha: 1)
@@ -854,7 +861,18 @@ extension ViewController {
         tempoIncrementTimer?.invalidate()
         tempoIncrementTimer = nil
     }
+    
+    func startTimer() {
+        stopTimer() // Make sure to stop any existing timer
+        updateTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateDurationLabel), userInfo: nil, repeats: true)
+        RunLoop.main.add(updateTimer!, forMode: .common)
+    }
 
+    
+    func stopTimer() {
+        updateTimer?.invalidate()
+        updateTimer = nil
+    }
 }
 
 
