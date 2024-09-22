@@ -39,7 +39,9 @@ class SecondScreen: UIViewController {
 // MARK: - Style & Layout
 extension SecondScreen {
     func style() {
-        view.backgroundColor = .white
+        view.backgroundColor = UIColor(red: 246/255.0, green: 244/255.0, blue: 210/255.0, alpha: 1.0)
+        
+        navigationItem.hidesBackButton = true
         
         firstNameLabel.translatesAutoresizingMaskIntoConstraints = false
         firstNameLabel.text = "First Name"
@@ -73,7 +75,7 @@ extension SecondScreen {
 
         connectToSpotifyButton.translatesAutoresizingMaskIntoConstraints = false
         connectToSpotifyButton.setTitle("Connect to Spotify", for: .normal)
-        connectToSpotifyButton.backgroundColor = UIColor.systemBlue
+        connectToSpotifyButton.backgroundColor = UIColor(red: 106/255, green: 176/255, blue: 76/255, alpha: 1.0)
         connectToSpotifyButton.layer.cornerRadius = 8
         connectToSpotifyButton.addTarget(self, action: #selector(goToNextScreen), for: .touchUpInside)
     }
