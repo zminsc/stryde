@@ -175,6 +175,9 @@ class ViewController: UIViewController, PlaylistSelectionDelegate {
     @objc func startTrackingBPM(_ button:UIButton) {
         accel.startTracking()
         appRemote.playerAPI?.resume(nil)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1){
+            self.startIncreasingTempo()
+        }
     }
     
     @objc func reselectPlaylist(_ button:UIButton) {
@@ -294,7 +297,6 @@ extension ViewController {
             changePlaylist.isHidden = false // this retrieves your songs
             fetchAndSortTracksByTempo(uris: trackURIs)
             tempo = 90
-            startIncreasingTempo()
             
         }
         else { // show login
@@ -495,6 +497,7 @@ extension ViewController {
     func getSortedTracks() {
 
         fetchAndSortTracksByTempo(uris: trackURIs)
+        
     }
     
     func playSongClosestTo(tempo inputTempo: Double) {
@@ -523,7 +526,7 @@ extension ViewController {
             
             vol = audioSession.outputVolume
             // Fade out
-            let duration=2.5
+            let duration=1.5
             let incrementDuration=0.1
             let steps=Int(duration/incrementDuration)
             let start_volume = vol
@@ -537,7 +540,7 @@ extension ViewController {
                 DispatchQueue.main.asyncAfter(deadline: timm + incrementDuration * Double(step)){
                     if let view = self.volumeView.subviews.first as? UISlider {
                         view.value = Float(step) * -volumeIncrement + start_volume
-                        print(Float(step) * -volumeIncrement + start_volume)
+                        
                     }
                 }
                 
@@ -561,7 +564,7 @@ extension ViewController {
                 DispatchQueue.main.asyncAfter(deadline: timm + incrementDuration * Double(step) + 2.0) {
                     if let view = self.volumeView.subviews.first as? UISlider {
                         view.value = Float(step) * volumeIncrement + end_volume
-                        print(Float(step) * volumeIncrement + end_volume)
+                        
                     }
                 }
             }
@@ -576,7 +579,7 @@ extension ViewController {
         tempoIncrementTimer?.invalidate()
 
         // Schedule a timer to increase tempo every 10 seconds
-        tempoIncrementTimer = Timer.scheduledTimer(withTimeInterval: 6.0, repeats: true) { [weak self] _ in
+        tempoIncrementTimer = Timer.scheduledTimer(withTimeInterval: 8.0, repeats: true) { [weak self] _ in
             guard let self = self else { return }
             self.tempo = Double(accel.tempo)
         }
@@ -627,7 +630,6 @@ extension ViewController {
         }
         
         self.userPlaylists = playlists
-        print(playlists)
         return playlists
     }
     
