@@ -12,8 +12,11 @@ protocol PlaylistSelectionDelegate: AnyObject {
     func didSelectPlaylist(_ playlistId: String)
 }
 
+protocol MoodSelectionDelegate: AnyObject {
+    func didSelectGenres(_ genres: [String])
+}
 
-class ViewController: UIViewController, PlaylistSelectionDelegate {
+class ViewController: UIViewController, PlaylistSelectionDelegate, MoodSelectionDelegate {
     
     let volumeView = MPVolumeView()
     let audioSession = AVAudioSession.sharedInstance()
@@ -101,6 +104,7 @@ class ViewController: UIViewController, PlaylistSelectionDelegate {
     let signOutButton = UIButton(type: .system)
     let startRun = UIButton(type: .system)
     let changePlaylist = UIButton(type: .system)
+    let setMood = UIButton(type: .system)
     
     var tempoTrackDictionary: [Double: String] = [:]
     
@@ -121,6 +125,11 @@ class ViewController: UIViewController, PlaylistSelectionDelegate {
         fetchTracksFromPlaylist(playlistId: playlistId)
     }
     
+    func didSelectGenres(_ genres: [String]) {
+        print("Selected Genres: \(genres)")
+        fetchMoodMusic(genres: genres)
+    }
+//    
     func showPlaylistSelection() {
         Task {
             let playlistVC = PlaylistsTableViewController()
@@ -175,15 +184,22 @@ class ViewController: UIViewController, PlaylistSelectionDelegate {
     @objc func startTrackingBPM(_ button:UIButton) {
         accel.startTracking()
         appRemote.playerAPI?.resume(nil)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1){
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25){
             self.startIncreasingTempo()
+            self.playSongClosestTo(tempo: 120)
         }
+
     }
     
     @objc func reselectPlaylist(_ button:UIButton) {
         showPlaylistSelection()
     }
     
+    @objc func showMoodSelection() {
+        let moodVC = MoodViewController()
+        moodVC.delegate = self  // Set ViewController as the delegate
+        present(moodVC, animated: true, completion: nil)
+    }
     
     
     @objc func didTapPauseOrPlay(_ button: UIButton, inputTempo: Double) {
@@ -264,6 +280,11 @@ extension ViewController {
         changePlaylist.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .bold)
         changePlaylist.addTarget(self, action: #selector(reselectPlaylist), for: .touchUpInside)
         
+        setMood.translatesAutoresizingMaskIntoConstraints = false
+        setMood.setTitle("AI Playlist Generation", for: .normal)
+        setMood.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .bold)
+        setMood.addTarget(self, action: #selector(showMoodSelection), for: .touchUpInside)
+        
     }
 
     func layout() {
@@ -276,6 +297,7 @@ extension ViewController {
         stackView.addArrangedSubview(signOutButton)
         stackView.addArrangedSubview(startRun)
         stackView.addArrangedSubview(changePlaylist)
+        stackView.addArrangedSubview(setMood)
 
         view.addSubview(stackView)
 
@@ -295,6 +317,7 @@ extension ViewController {
             playPauseButton.isHidden = false
             startRun.isHidden = false
             changePlaylist.isHidden = false // this retrieves your songs
+            setMood.isHidden = false
             fetchAndSortTracksByTempo(uris: trackURIs)
             tempo = 90
             
@@ -308,6 +331,7 @@ extension ViewController {
             playPauseButton.isHidden = true
             startRun.isHidden = true
             changePlaylist.isHidden = true
+            setMood.isHidden = true
         }
     }
 }
@@ -488,6 +512,7 @@ extension ViewController {
             // Sort the dictionary by tempo and store it in the class property
             self.tempoTrackDictionary = tempDict.sorted(by: { $0.key < $1.key }).reduce(into: [:]) { $0[$1.key] = $1.value }
             print("Sorted tempo track dictionary: \(self.tempoTrackDictionary)")
+            
         }
         
         
@@ -505,9 +530,9 @@ extension ViewController {
             print("No player state available.")
             return
         }
-
+        
         // Check if the music is paused
-        if lastPlayerState.isPaused {
+        if lastPlayerState.isPaused{
             print("Music is paused, not playing a new song.")
             return
         }
@@ -634,7 +659,7 @@ extension ViewController {
     }
     
     func fetchTracksFromPlaylist(playlistId: String) {
-        let urlString = "https://api.spotify.com/v1/playlists/\(playlistId)/tracks"
+        let urlString = "https://api.spotify.com/v1/playlists/\(playlistId)/tracks?limit=10"
         guard let url = URL(string: urlString) else { return }
 
         var request = URLRequest(url: url)
@@ -644,6 +669,7 @@ extension ViewController {
             print("Access token error!")
             return
         }
+
         request.addValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
 
         let task = URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
@@ -653,17 +679,21 @@ extension ViewController {
             }
 
             guard let data = data else { return }
-
+            
+            
             do {
-                if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
-                   let items = json["items"] as? [[String: Any]] {
+                if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+                    {
+                    let items = json["items"] as? [[String: Any]]
+                    
                     var trackURIsLocal: [String] = []
-                    for item in items {
+                    for item in items! {
                         if let track = item["track"] as? [String: Any],
                            let uri = track["uri"] as? String {
                             trackURIsLocal.append(uri)
                         }
                     }
+                    
                     // Sort tracks based on tempo
                     DispatchQueue.main.async {
                         self?.trackURIs = trackURIsLocal
@@ -676,6 +706,86 @@ extension ViewController {
                 print("Error parsing track data: \(error)")
             }
         }
+        task.resume()
+    }
+
+    func fetchMoodMusic(genres: [String]) {
+        // Ensure we have 1 to 3 genres as input
+        guard !genres.isEmpty, genres.count <= 3 else {
+            print("Please provide between 1 and 3 genres.")
+            return
+        }
+        
+        // Construct the query value by joining the genres with spaces
+        let genreQuery = genres.map { "genre:\($0)" }.joined(separator: " ")
+        
+        // Define the API endpoint
+        let spotifySearchEndpoint = "https://api.spotify.com/v1/search"
+        
+        // Construct the query parameters for the search request
+        let queryItems = [
+            URLQueryItem(name: "q", value: genreQuery),
+            URLQueryItem(name: "type", value: "playlist"),
+            URLQueryItem(name: "limit", value: "1")
+        ]
+        
+        // Build the full URL with query parameters
+        var urlComponents = URLComponents(string: spotifySearchEndpoint)!
+        urlComponents.queryItems = queryItems
+        guard let url = urlComponents.url else {
+            print("Invalid URL")
+            return
+        }
+        
+        // Create a URLRequest and set the Authorization header
+        var request = URLRequest(url: url)
+        guard let accessToken = appRemote.connectionParameters.accessToken else {
+            print("Access token error!")
+            return
+        }
+        request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+        request.httpMethod = "GET"
+        
+        // Create a data task to perform the API request
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Error: \(error.localizedDescription)")
+                return
+            }
+            
+            guard let data = data else {
+                print("No data received")
+                return
+            }
+            
+            // Parse the response data
+            do {
+                if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+                   let playlists = json["playlists"] as? [String: Any],
+                   let items = playlists["items"] as? [[String: Any]] {
+                    
+                    // Extract the URI of the first playlist
+                    if let firstPlaylist = items.first,
+                       var uri = firstPlaylist["uri"] as? String {
+                        
+                        // Sort tracks based on tempo
+                        DispatchQueue.main.async {
+                            uri = uri.replacingOccurrences(of: "spotify:playlist:", with: "")
+                            print("Found a new playlist from mood!")
+                            self.appRemote.playerAPI?.pause(nil)
+                            self.fetchTracksFromPlaylist(playlistId: uri)
+                        }
+                        
+                        
+                    } else {
+                        print("No playlists found for the given genres.")
+                    }
+                }
+            } catch {
+                print("Failed to parse JSON: \(error.localizedDescription)")
+            }
+        }
+        
         task.resume()
     }
     

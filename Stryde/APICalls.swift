@@ -56,10 +56,11 @@ class APICalls {
             return
         }
         request.httpBody = httpBody
-        request.timeoutInterval = 50
+        request.timeoutInterval = 20
         let session = URLSession.shared
         session.dataTask(with: request) { (data, response, error) in
             if let response = response {
+                print(response)
             }
             if let data = data {
                 do {
