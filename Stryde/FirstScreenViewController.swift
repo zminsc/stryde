@@ -14,8 +14,8 @@ class FirstScreenViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
-        
+        view.backgroundColor = UIColor(red: 246/255.0, green: 244/255.0, blue: 210/255.0, alpha: 1.0)
+
         setupTitleLabel()
         setupButton()
         setupStickman()
@@ -61,25 +61,23 @@ class FirstScreenViewController: UIViewController {
     
     
     func setupButton() {
-            view.addSubview(nextButton)
-            
-            nextButton.configuration = .filled()
-            nextButton.configuration?.baseBackgroundColor = UIColor(red: 106/255, green: 176/255, blue: 76/255, alpha: 1.0)  // Matching green
-            nextButton.configuration?.title = "Sign Up"
-            nextButton.layer.cornerRadius = 10
-            nextButton.clipsToBounds = true
-            
-            nextButton.addTarget(self, action: #selector(goToNextScreen), for: .touchUpInside)
-            
-            nextButton.translatesAutoresizingMaskIntoConstraints = false
-            
-            NSLayoutConstraint.activate([
-                nextButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-                nextButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -40),
-                nextButton.widthAnchor.constraint(equalToConstant: 200),
-                nextButton.heightAnchor.constraint(equalToConstant: 50),
-            ])
-        }
+        view.addSubview(nextButton)
+        
+        nextButton.translatesAutoresizingMaskIntoConstraints = false
+        nextButton.setTitle("Create Account", for: .normal)
+        nextButton.titleLabel?.font = UIFont.systemFont(ofSize: 19)
+        nextButton.backgroundColor = UIColor(red: 106/255, green: 176/255, blue: 76/255, alpha: 1.0)
+        nextButton.layer.cornerRadius = 8
+        nextButton.addTarget(self, action: #selector(goToNextScreen), for: .touchUpInside)
+        nextButton.setTitleColor(.white, for: .normal)
+        
+        NSLayoutConstraint.activate([
+            nextButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            nextButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -40),
+            nextButton.widthAnchor.constraint(equalToConstant: 225),
+            nextButton.heightAnchor.constraint(equalToConstant: 50),
+        ])
+    }
     
     func setupStickman() {
         // Assuming the image is named "runningPerson.png" in your asset catalog

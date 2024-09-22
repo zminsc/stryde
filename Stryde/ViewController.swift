@@ -192,6 +192,11 @@ class ViewController: UIViewController, PlaylistSelectionDelegate {
         
         setupKeyboardDismissRecognizer()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        updateViewBasedOnConnected()
+    }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -306,6 +311,7 @@ extension ViewController {
 
         connectButton.translatesAutoresizingMaskIntoConstraints = false
         connectButton.setTitle("Connect to Spotify", for: .normal)
+        connectButton.titleLabel?.font = UIFont.systemFont(ofSize: 19)
         connectButton.backgroundColor = UIColor(red: 106/255, green: 176/255, blue: 76/255, alpha: 1.0)
         connectButton.layer.cornerRadius = 8
         connectButton.addTarget(self, action: #selector(didTapConnect), for: .touchUpInside)
@@ -457,10 +463,10 @@ extension ViewController {
             moodTextView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             moodTextView.heightAnchor.constraint(equalToConstant: 40),
             
-            connectButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
-            connectButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 100),
-            connectButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -100),
-            connectButton.heightAnchor.constraint(equalToConstant: 50)
+            connectButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            connectButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -40),
+            connectButton.widthAnchor.constraint(equalToConstant: 225),
+            connectButton.heightAnchor.constraint(equalToConstant: 50),
         ])
         
         // Create stack views for each pair
