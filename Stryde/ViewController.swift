@@ -92,16 +92,8 @@ class ViewController: UIViewController, PlaylistSelectionDelegate {
 
 
     // MARK: - Subviews
-    let stackView = UIStackView()
-    let connectLabel = UILabel()
-    let connectButton = UIButton(type: .system)
-    let imageView = UIImageView()
-    let trackLabel = UILabel()
-    let playPauseButton = UIButton(type: .system)
-    let signOutButton = UIButton(type: .system)
-    let startRun = UIButton(type: .system)
-    let changePlaylist = UIButton(type: .system)
     
+    // connect view
     let firstNameLabel = UILabel()
     let lastNameLabel = UILabel()
     let moodLabel = UILabel()
@@ -109,6 +101,29 @@ class ViewController: UIViewController, PlaylistSelectionDelegate {
     let firstNameTextView = UITextView()
     let lastNameTextView = UITextView()
     let moodTextView = UITextView()
+    
+    let connectButton = UIButton(type: .system)
+    
+    // song view
+    let stackView = UIStackView()
+    let imageView = UIImageView()
+    let trackLabel = UILabel()
+    let playPauseButton = UIButton(type: .system)
+    let changePlaylist = UIButton(type: .system)
+    
+    let durationLabel = UILabel()
+    let distanceLabel = UILabel()
+    let cadenceLabel = UILabel()
+    let paceLabel = UILabel()
+    
+    let durationAmountLabel = UILabel()
+    let distanceAmountLabel = UILabel()
+    let cadenceAmountLabel = UILabel()
+    let paceAmountLabel = UILabel()
+    
+    let runningNote = UIImageView()
+    
+    let spacerView = UIView()
     
     var tempoTrackDictionary: [Double: String] = [:]
     
@@ -156,6 +171,25 @@ class ViewController: UIViewController, PlaylistSelectionDelegate {
             print("tff")
         }
         
+        // Bottom Curve Shape
+        let bottomCurveView = UIView()
+        bottomCurveView.backgroundColor = UIColor(red: 212/255, green: 224/255, blue: 155/255, alpha: 1.0)  // #D4E09B
+        bottomCurveView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(bottomCurveView)
+        view.sendSubviewToBack(bottomCurveView)
+        
+        NSLayoutConstraint.activate([
+            bottomCurveView.heightAnchor.constraint(equalToConstant: 300),  // Increased height for full oval
+            bottomCurveView.widthAnchor.constraint(equalToConstant: view.frame.width * 2),  // Make it twice the screen width for the oval effect
+            bottomCurveView.centerXAnchor.constraint(equalTo: view.centerXAnchor),  // Center it horizontally
+            bottomCurveView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+                
+        // Apply corner rounding to create the curved effect
+        bottomCurveView.layer.cornerRadius = 400
+        bottomCurveView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+        bottomCurveView.layer.masksToBounds = true
+        
         setupKeyboardDismissRecognizer()
     }
 
@@ -172,7 +206,7 @@ class ViewController: UIViewController, PlaylistSelectionDelegate {
         lastPlayerState = playerState
         trackLabel.text = playerState.track.name
 
-        let configuration = UIImage.SymbolConfiguration(pointSize: 50, weight: .bold, scale: .large)
+        let configuration = UIImage.SymbolConfiguration(pointSize: 40, weight: .bold, scale: .large)
         if playerState.isPaused {
             playPauseButton.setImage(UIImage(systemName: "play.circle.fill", withConfiguration: configuration), for: .normal)
         } else {
@@ -181,7 +215,7 @@ class ViewController: UIViewController, PlaylistSelectionDelegate {
     }
 
     // MARK: - Actions
-    @objc func startTrackingBPM(_ button:UIButton) {
+    @objc func startTrackingBPM() {
         accel.startTracking()
         appRemote.playerAPI?.resume(nil)
     }
@@ -193,6 +227,8 @@ class ViewController: UIViewController, PlaylistSelectionDelegate {
     
     
     @objc func didTapPauseOrPlay(_ button: UIButton, inputTempo: Double) {
+        startTrackingBPM()
+        
         if let lastPlayerState = lastPlayerState, lastPlayerState.isPaused {
             appRemote.playerAPI?.resume(nil)
             startIncreasingTempo()
@@ -237,6 +273,7 @@ extension ViewController {
         stackView.spacing = 20
         stackView.alignment = .center
         
+        // MARK: - Connect View
         firstNameLabel.translatesAutoresizingMaskIntoConstraints = false
         firstNameLabel.text = "First Name"
         firstNameLabel.font = UIFont.systemFont(ofSize: 16)
@@ -273,41 +310,83 @@ extension ViewController {
         connectButton.layer.cornerRadius = 8
         connectButton.addTarget(self, action: #selector(didTapConnect), for: .touchUpInside)
         connectButton.setTitleColor(.white, for: .normal)
+        
+        spacerView.translatesAutoresizingMaskIntoConstraints = false
+        spacerView.backgroundColor = .clear
 
-        // MARK: - Play View
+        // MARK: - Song View
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
 
         trackLabel.translatesAutoresizingMaskIntoConstraints = false
-        trackLabel.font = UIFont.preferredFont(forTextStyle: .body)
+        trackLabel.font = UIFont.systemFont(ofSize: 24, weight: .bold)
         trackLabel.textAlignment = .center
         trackLabel.textColor = UIColor(red: 164/255, green: 74/255, blue: 63/255, alpha: 1)
 
         playPauseButton.translatesAutoresizingMaskIntoConstraints = false
         playPauseButton.addTarget(self, action: #selector(didTapPauseOrPlay), for: .primaryActionTriggered)
         playPauseButton.tintColor = UIColor(red: 164/255, green: 74/255, blue: 63/255, alpha: 1)
-
-        signOutButton.translatesAutoresizingMaskIntoConstraints = false
-        signOutButton.setTitle("Sign out", for: .normal)
-        signOutButton.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .bold)
-        signOutButton.addTarget(self, action: #selector(didTapSignOut(_:)), for: .touchUpInside)
-        signOutButton.setTitleColor(UIColor(red: 164/255, green: 74/255, blue: 63/255, alpha: 1), for: .normal)
-        
-        startRun.translatesAutoresizingMaskIntoConstraints = false
-        startRun.setTitle("Start Run", for: .normal)
-        startRun.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .bold)
-        startRun.addTarget(self, action: #selector(startTrackingBPM), for: .touchUpInside)
-        startRun.setTitleColor(UIColor(red: 164/255, green: 74/255, blue: 63/255, alpha: 1), for: .normal)
         
         changePlaylist.translatesAutoresizingMaskIntoConstraints = false
-        changePlaylist.setTitle("Change Playlist", for: .normal)
-        changePlaylist.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .bold)
+        changePlaylist.setImage(UIImage(systemName: "ellipsis.circle"), for: .normal)
+        changePlaylist.tintColor = UIColor(red: 164/255, green: 74/255, blue: 63/255, alpha: 1)
         changePlaylist.addTarget(self, action: #selector(reselectPlaylist), for: .touchUpInside)
-        changePlaylist.setTitleColor(UIColor(red: 164/255, green: 74/255, blue: 63/255, alpha: 1), for: .normal)
+        
+        durationLabel.text = "Duration"
+        durationLabel.translatesAutoresizingMaskIntoConstraints = false
+        durationLabel.font = UIFont.systemFont(ofSize: 24, weight: .bold)
+        durationLabel.textColor = UIColor(red: 164/255, green: 74/255, blue: 63/255, alpha: 1)
+        durationLabel.textAlignment = .center
+        
+        distanceLabel.text = "Distance"
+        distanceLabel.translatesAutoresizingMaskIntoConstraints = false
+        distanceLabel.font = UIFont.systemFont(ofSize: 24, weight: .bold)
+        distanceLabel.textColor = UIColor(red: 164/255, green: 74/255, blue: 63/255, alpha: 1)
+        distanceLabel.textAlignment = .center
+        
+        cadenceLabel.text = "Cadence"
+        cadenceLabel.translatesAutoresizingMaskIntoConstraints = false
+        cadenceLabel.font = UIFont.systemFont(ofSize: 24, weight: .bold)
+        cadenceLabel.textColor = UIColor(red: 164/255, green: 74/255, blue: 63/255, alpha: 1)
+        cadenceLabel.textAlignment = .center
+        
+        paceLabel.text = "Pace"
+        paceLabel.translatesAutoresizingMaskIntoConstraints = false
+        paceLabel.font = UIFont.systemFont(ofSize: 24, weight: .bold)
+        paceLabel.textColor = UIColor(red: 164/255, green: 74/255, blue: 63/255, alpha: 1)
+        paceLabel.textAlignment = .center
+        
+        durationAmountLabel.text = "15:10"
+        durationAmountLabel.translatesAutoresizingMaskIntoConstraints = false
+        durationAmountLabel.font = UIFont.systemFont(ofSize: 24, weight: .medium)
+        durationAmountLabel.textColor = UIColor(red: 164/255, green: 74/255, blue: 63/255, alpha: 1)
+        durationAmountLabel.textAlignment = .center
+        
+        distanceAmountLabel.text = "1.87 mi"
+        distanceAmountLabel.translatesAutoresizingMaskIntoConstraints = false
+        distanceAmountLabel.font = UIFont.systemFont(ofSize: 24, weight: .medium)
+        distanceAmountLabel.textColor = UIColor(red: 164/255, green: 74/255, blue: 63/255, alpha: 1)
+        distanceAmountLabel.textAlignment = .center
+        
+        cadenceAmountLabel.text = "180 SPM"
+        cadenceAmountLabel.translatesAutoresizingMaskIntoConstraints = false
+        cadenceAmountLabel.font = UIFont.systemFont(ofSize: 24, weight: .medium)
+        cadenceAmountLabel.textColor = UIColor(red: 164/255, green: 74/255, blue: 63/255, alpha: 1)
+        cadenceAmountLabel.textAlignment = .center
+        
+        paceAmountLabel.text = "6:07"
+        paceAmountLabel.translatesAutoresizingMaskIntoConstraints = false
+        paceAmountLabel.font = UIFont.systemFont(ofSize: 24, weight: .medium)
+        paceAmountLabel.textColor = UIColor(red: 164/255, green: 74/255, blue: 63/255, alpha: 1)
+        paceAmountLabel.textAlignment = .center
+        
+        runningNote.image = UIImage(named: "music-note")
+        runningNote.contentMode = .scaleAspectFit
+        runningNote.translatesAutoresizingMaskIntoConstraints = false
     }
 
     func layout() {
-        
+        // connect view
         view.addSubview(firstNameLabel)
         view.addSubview(firstNameTextView)
         view.addSubview(lastNameLabel)
@@ -315,18 +394,42 @@ extension ViewController {
         view.addSubview(moodLabel)
         view.addSubview(moodTextView)
         view.addSubview(connectButton)
-        
-        stackView.addArrangedSubview(imageView)
-        stackView.addArrangedSubview(trackLabel)
-        stackView.addArrangedSubview(playPauseButton)
-        stackView.addArrangedSubview(signOutButton)
-        stackView.addArrangedSubview(startRun)
-        stackView.addArrangedSubview(changePlaylist)
-
-
-        view.addSubview(stackView)
+        view.addSubview(runningNote)
         
         NSLayoutConstraint.activate([
+            runningNote.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            runningNote.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -240),
+            runningNote.widthAnchor.constraint(equalToConstant: 200),
+            runningNote.heightAnchor.constraint(equalToConstant: 200)
+        ])
+        
+        // song view
+        view.addSubview(stackView)
+        stackView.addArrangedSubview(imageView)
+        
+        let horizontalStackView = UIStackView()
+        horizontalStackView.axis = .horizontal
+        horizontalStackView.distribution = .fillProportionally
+        horizontalStackView.alignment = .center
+        horizontalStackView.spacing = 10
+
+        // Add elements to the horizontal stackView
+        horizontalStackView.addArrangedSubview(trackLabel)
+        horizontalStackView.addArrangedSubview(changePlaylist)
+        
+        
+        stackView.addArrangedSubview(horizontalStackView)
+        stackView.addArrangedSubview(playPauseButton)
+        
+        stackView.addArrangedSubview(spacerView)
+        NSLayoutConstraint.activate([
+            spacerView.heightAnchor.constraint(equalToConstant: 60) // Adjust this constant to increase or decrease the space
+        ])
+
+        NSLayoutConstraint.activate([
+            stackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            stackView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 30),
+            
             firstNameLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
             firstNameLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             firstNameLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
@@ -360,51 +463,102 @@ extension ViewController {
             connectButton.heightAnchor.constraint(equalToConstant: 50)
         ])
         
+        // Create stack views for each pair
+        let durationStack = UIStackView(arrangedSubviews: [durationLabel, durationAmountLabel])
+        let distanceStack = UIStackView(arrangedSubviews: [distanceLabel, distanceAmountLabel])
+        let cadenceStack = UIStackView(arrangedSubviews: [cadenceLabel, cadenceAmountLabel])
+        let paceStack = UIStackView(arrangedSubviews: [paceLabel, paceAmountLabel])
+
+        // Configure stack views
+        [durationStack, distanceStack, cadenceStack, paceStack].forEach {
+            $0.axis = .vertical
+            $0.distribution = .fillEqually
+            $0.alignment = .fill
+            $0.spacing = 1
+        }
+
+        // Create row stack views to hold each pair
+        let topRowStack = UIStackView(arrangedSubviews: [durationStack, distanceStack])
+        let bottomRowStack = UIStackView(arrangedSubviews: [cadenceStack, paceStack])
+
+        // Configure row stack views
+        [topRowStack, bottomRowStack].forEach {
+            $0.axis = .horizontal
+            $0.distribution = .fillEqually
+            $0.alignment = .fill
+            $0.spacing = 110
+        }
+
+        // Add rows to the main stack view
+        stackView.addArrangedSubview(topRowStack)
+        stackView.addArrangedSubview(bottomRowStack)
+
+        // Ensure the stack views take up an appropriate amount of space
         NSLayoutConstraint.activate([
-            stackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            stackView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            topRowStack.heightAnchor.constraint(equalToConstant: 80),
+            bottomRowStack.heightAnchor.constraint(equalToConstant: 80)
         ])
     }
 
     func updateViewBasedOnConnected() {
         if appRemote.isConnected == true {
-            connectButton.isHidden = true
-            connectLabel.isHidden = true
-            signOutButton.isHidden = false
-            imageView.isHidden = false
-            trackLabel.isHidden = false
-            playPauseButton.isHidden = false
-            startRun.isHidden = false
-            changePlaylist.isHidden = false // this retrieves your songs
-            fetchAndSortTracksByTempo(uris: trackURIs)
-            tempo = 90
-            startIncreasingTempo()
-            
+            // connect view
             firstNameLabel.isHidden = true
             lastNameLabel.isHidden = true
             moodLabel.isHidden = true
             firstNameTextView.isHidden = true
             lastNameTextView.isHidden = true
             moodTextView.isHidden = true
-            title = ""
-        }
-        else { // show login
-            connectButton.isHidden = false
-            connectLabel.isHidden = false
-            signOutButton.isHidden = true
-            imageView.isHidden = true
-            trackLabel.isHidden = true
-            playPauseButton.isHidden = true
-            startRun.isHidden = true
-            changePlaylist.isHidden = true
+            connectButton.isHidden = true
+            runningNote.isHidden = true
             
+            // song view
+            title = ""
+            imageView.isHidden = false
+            trackLabel.isHidden = false
+            playPauseButton.isHidden = false
+            changePlaylist.isHidden = false // this retrieves your songs
+            durationLabel.isHidden = false
+            distanceLabel.isHidden = false
+            cadenceLabel.isHidden = false
+            paceLabel.isHidden = false
+            durationAmountLabel.isHidden = false
+            distanceAmountLabel.isHidden = false
+            cadenceAmountLabel.isHidden = false
+            paceAmountLabel.isHidden = false
+            
+            fetchAndSortTracksByTempo(uris: trackURIs)
+            tempo = 90
+            startIncreasingTempo()
+        } else { // show login
+            // connect view
             firstNameLabel.isHidden = false
             lastNameLabel.isHidden = false
             moodLabel.isHidden = false
             firstNameTextView.isHidden = false
             lastNameTextView.isHidden = false
             moodTextView.isHidden = false
+            connectButton.isHidden = false
+            runningNote.isHidden = false
+            
+            // song view
             title = "Sign Up"
+            imageView.isHidden = true
+            trackLabel.isHidden = true
+            playPauseButton.isHidden = true
+            changePlaylist.isHidden = true // this retrieves your songs
+            durationLabel.isHidden = true
+            distanceLabel.isHidden = true
+            cadenceLabel.isHidden = true
+            paceLabel.isHidden = true
+            durationAmountLabel.isHidden = true
+            distanceAmountLabel.isHidden = true
+            cadenceAmountLabel.isHidden = true
+            paceAmountLabel.isHidden = true
+            
+            fetchAndSortTracksByTempo(uris: trackURIs)
+            tempo = 90
+            startIncreasingTempo()
         }
     }
 }
