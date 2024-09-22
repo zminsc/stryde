@@ -86,13 +86,29 @@ class ViewController: UIViewController {
     }
     
     var tempoIncrementTimer: Timer?
+        
 
 
     // MARK: App Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .systemBlue
         style()
         layout()
+        
+        navigationItem.hidesBackButton = true
+
+        
+        // MARK: Background
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.colors = [
+            UIColor(red: 246/255, green: 244/255, blue: 210/255, alpha: 1.0).cgColor,  // #F6F4D2
+            UIColor(red: 203/255, green: 223/255, blue: 189/255, alpha: 1.0).cgColor   // #CBDFBD
+        ]
+            gradientLayer.startPoint = CGPoint(x: 0.0, y: 0.0)
+            gradientLayer.endPoint = CGPoint(x: 1.0, y: 1.0)
+            gradientLayer.frame = view.bounds
+            view.layer.insertSublayer(gradientLayer, at: 0)
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -165,9 +181,9 @@ extension ViewController {
         stackView.alignment = .center
 
         connectLabel.translatesAutoresizingMaskIntoConstraints = false
-        connectLabel.text = "Connect your Spotify account"
+        connectLabel.text = "STRYDE"
         connectLabel.font = UIFont.preferredFont(forTextStyle: .title3)
-        connectLabel.textColor = .systemGreen
+        connectLabel.textColor = .black
 
         connectButton.translatesAutoresizingMaskIntoConstraints = false
         connectButton.configuration = .filled()
