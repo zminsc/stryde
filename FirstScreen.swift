@@ -91,7 +91,7 @@ class FirstScreen: UIViewController {
         }
     
     @objc func goToNextScreen() {
-        let nextScreen = ViewController()
+        let nextScreen = SecondScreen()
         nextScreen.title = "Second Screen"
         navigationController?.pushViewController(nextScreen, animated: true)
     }
