@@ -219,6 +219,8 @@ class ViewController: UIViewController, PlaylistSelectionDelegate {
 // MARK: Style & Layout
 extension ViewController {
     func style() {
+        navigationItem.hidesBackButton = true
+        
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
         stackView.spacing = 20

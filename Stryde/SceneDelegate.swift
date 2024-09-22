@@ -10,7 +10,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(frame: UIScreen.main.bounds)
         window!.makeKeyAndVisible()
         window!.windowScene = windowScene
-        window!.rootViewController = rootViewController
+        
+        window!.rootViewController = UINavigationController(rootViewController: FirstScreenViewController())
     }
 
     // For spotify authorization and authentication flow
