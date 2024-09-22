@@ -122,10 +122,11 @@ class ViewController: UIViewController, PlaylistSelectionDelegate {
     let paceAmountLabel = UILabel()
     
     let runningNote = UIImageView()
-    
     let spacerView = UIView()
-    
     var tempoTrackDictionary: [Double: String] = [:]
+    
+    let heartButton = UIButton(type: .system)
+    let aiButton = UIButton(type: .system)
     
     var tempo: Double? {
         didSet {
@@ -223,7 +224,10 @@ class ViewController: UIViewController, PlaylistSelectionDelegate {
     // MARK: - Actions
     @objc func startTrackingBPM() {
         accel.startTracking()
-        appRemote.playerAPI?.resume(nil)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+            self.appRemote.playerAPI?.resume(nil)
+            self.startIncreasingTempo()
+        }
     }
     
     @objc func reselectPlaylist(_ button:UIButton) {
@@ -260,6 +264,16 @@ class ViewController: UIViewController, PlaylistSelectionDelegate {
     @objc func didTapConnect(_ button: UIButton) {
         guard let sessionManager = sessionManager else { return }
         sessionManager.initiateSession(with: scopes, options: .clientOnly, campaign: nil)
+    }
+    
+    @objc func didTapHeart() {
+        // Implement what happens when previous is tapped
+        print("Previous track")
+    }
+
+    @objc func didTapAI() {
+        // Implement what happens when next is tapped
+        print("Next track")
     }
 
     // MARK: - Private Helpers
@@ -390,7 +404,7 @@ extension ViewController {
         distanceAmountLabel.textColor = UIColor(red: 164/255, green: 74/255, blue: 63/255, alpha: 1)
         distanceAmountLabel.textAlignment = .center
         
-        cadenceAmountLabel.text = "180 SPM"
+        cadenceAmountLabel.text = "--"
         cadenceAmountLabel.translatesAutoresizingMaskIntoConstraints = false
         cadenceAmountLabel.font = UIFont.systemFont(ofSize: 24, weight: .medium)
         cadenceAmountLabel.textColor = UIColor(red: 164/255, green: 74/255, blue: 63/255, alpha: 1)
@@ -405,6 +419,14 @@ extension ViewController {
         runningNote.image = UIImage(named: "music-note")
         runningNote.contentMode = .scaleAspectFit
         runningNote.translatesAutoresizingMaskIntoConstraints = false
+        
+        heartButton.setImage(UIImage(systemName: "heart"), for: .normal)
+        heartButton.tintColor = UIColor(red: 164/255, green: 74/255, blue: 63/255, alpha: 1)
+        heartButton.addTarget(self, action: #selector(didTapHeart), for: .touchUpInside)
+
+        aiButton.setImage(UIImage(systemName: "music.note.list"), for: .normal)
+        aiButton.tintColor = UIColor(red: 164/255, green: 74/255, blue: 63/255, alpha: 1)
+        aiButton.addTarget(self, action: #selector(didTapAI), for: .touchUpInside)
     }
 
     func layout() {
@@ -439,10 +461,21 @@ extension ViewController {
         horizontalStackView.addArrangedSubview(trackLabel)
         horizontalStackView.addArrangedSubview(changePlaylist)
         
-        
+        let controlButtonsStack = UIStackView(arrangedSubviews: [aiButton, playPauseButton, heartButton])
+        controlButtonsStack.axis = .horizontal
+        controlButtonsStack.distribution = .equalSpacing
+        controlButtonsStack.alignment = .center
+        controlButtonsStack.spacing = 60 // Maintain spacing as per your design requirement
+
         stackView.addArrangedSubview(horizontalStackView)
-        stackView.addArrangedSubview(playPauseButton)
-        
+        stackView.addArrangedSubview(controlButtonsStack)
+
+        // Ensure proper layout constraints for the new stack view
+        NSLayoutConstraint.activate([
+            controlButtonsStack.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            controlButtonsStack.centerYAnchor.constraint(equalTo: playPauseButton.centerYAnchor)
+        ])
+                
         stackView.addArrangedSubview(spacerView)
         NSLayoutConstraint.activate([
             spacerView.heightAnchor.constraint(equalToConstant: 60) // Adjust this constant to increase or decrease the space
@@ -548,10 +581,10 @@ extension ViewController {
             distanceAmountLabel.isHidden = false
             cadenceAmountLabel.isHidden = false
             paceAmountLabel.isHidden = false
+            heartButton.isHidden = false
+            aiButton.isHidden = false
             
             fetchAndSortTracksByTempo(uris: trackURIs)
-            tempo = 90
-            startIncreasingTempo()
         } else { // show login
             // connect view
             firstNameLabel.isHidden = false
@@ -577,10 +610,10 @@ extension ViewController {
             distanceAmountLabel.isHidden = true
             cadenceAmountLabel.isHidden = true
             paceAmountLabel.isHidden = true
+            heartButton.isHidden = true
+            aiButton.isHidden = true
             
             fetchAndSortTracksByTempo(uris: trackURIs)
-            tempo = 90
-            startIncreasingTempo()
         }
     }
 }
@@ -812,7 +845,6 @@ extension ViewController {
                 DispatchQueue.main.asyncAfter(deadline: timm + incrementDuration * Double(step)){
                     if let view = self.volumeView.subviews.first as? UISlider {
                         view.value = Float(step) * -volumeIncrement + start_volume
-                        print(Float(step) * -volumeIncrement + start_volume)
                     }
                 }
                 
@@ -836,7 +868,6 @@ extension ViewController {
                 DispatchQueue.main.asyncAfter(deadline: timm + incrementDuration * Double(step) + 2.0) {
                     if let view = self.volumeView.subviews.first as? UISlider {
                         view.value = Float(step) * volumeIncrement + end_volume
-                        print(Float(step) * volumeIncrement + end_volume)
                     }
                 }
             }
@@ -851,9 +882,10 @@ extension ViewController {
         tempoIncrementTimer?.invalidate()
 
         // Schedule a timer to increase tempo every 10 seconds
-        tempoIncrementTimer = Timer.scheduledTimer(withTimeInterval: 6.0, repeats: true) { [weak self] _ in
+        tempoIncrementTimer = Timer.scheduledTimer(withTimeInterval: 8.0, repeats: true) { [weak self] _ in
             guard let self = self else { return }
             self.tempo = Double(accel.tempo)
+            self.cadenceAmountLabel.text = "\(String(accel.tempo)) BPM"
         }
     }
     
