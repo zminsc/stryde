@@ -10,15 +10,16 @@
 		B12182052C9E94DD00090D8D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B12182042C9E94DD00090D8D /* AppDelegate.swift */; };
 		B12182072C9E94DD00090D8D /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B12182062C9E94DD00090D8D /* SceneDelegate.swift */; };
 		B12182092C9E94DD00090D8D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B12182082C9E94DD00090D8D /* ViewController.swift */; };
-		B121820C2C9E94DD00090D8D /* Base in Resources */ = {isa = PBXBuildFile; fileRef = B121820B2C9E94DD00090D8D /* Base */; };
 		B121820E2C9E94DE00090D8D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B121820D2C9E94DE00090D8D /* Assets.xcassets */; };
 		B12182112C9E94DE00090D8D /* Base in Resources */ = {isa = PBXBuildFile; fileRef = B12182102C9E94DE00090D8D /* Base */; };
 		B152651C2C9F244B00AF2329 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B152651B2C9F244B00AF2329 /* Constants.swift */; };
 		B152651F2C9F265800AF2329 /* SpotifyiOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B152651D2C9F25EF00AF2329 /* SpotifyiOS.framework */; };
 		B15265202C9F265800AF2329 /* SpotifyiOS.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B152651D2C9F25EF00AF2329 /* SpotifyiOS.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		B1B87F2F2C9FA7D700319F1B /* SecondScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B87F2E2C9FA7D700319F1B /* SecondScreen.swift */; };
 		B6C93AE72C9F625B00EC0BEB /* APICalls.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C93AE62C9F625800EC0BEB /* APICalls.swift */; };
 		B6C93AE92C9F626D00EC0BEB /* Accel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C93AE82C9F626B00EC0BEB /* Accel.swift */; };
 		B6C93AEE2C9F928700EC0BEB /* PlaylistsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C93AED2C9F927B00EC0BEB /* PlaylistsTableViewController.swift */; };
+		BC43C2E82C9F947C0023B5DD /* FirstScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC43C2E72C9F947C0023B5DD /* FirstScreen.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -40,17 +41,18 @@
 		B12182042C9E94DD00090D8D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B12182062C9E94DD00090D8D /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		B12182082C9E94DD00090D8D /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		B121820B2C9E94DD00090D8D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		B121820D2C9E94DE00090D8D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B12182102C9E94DE00090D8D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B12182122C9E94DE00090D8D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B15265162C9F21E800AF2329 /* Stryde-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Stryde-Bridging-Header.h"; sourceTree = "<group>"; };
 		B152651B2C9F244B00AF2329 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		B152651D2C9F25EF00AF2329 /* SpotifyiOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SpotifyiOS.framework; sourceTree = "<group>"; };
+		B1B87F2E2C9FA7D700319F1B /* SecondScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondScreen.swift; sourceTree = "<group>"; };
 		B6C93AE62C9F625800EC0BEB /* APICalls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APICalls.swift; sourceTree = "<group>"; };
 		B6C93AE82C9F626B00EC0BEB /* Accel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Accel.swift; sourceTree = "<group>"; };
 		B6C93AED2C9F927B00EC0BEB /* PlaylistsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistsTableViewController.swift; sourceTree = "<group>"; };
 		B6C93AF02C9FA8C000EC0BEB /* Stryde.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = Stryde.xcodeproj; sourceTree = SOURCE_ROOT; };
+		BC43C2E72C9F947C0023B5DD /* FirstScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstScreen.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -87,6 +89,8 @@
 			isa = PBXGroup;
 			children = (
 				B6C93AED2C9F927B00EC0BEB /* PlaylistsTableViewController.swift */,
+				BC43C2E72C9F947C0023B5DD /* FirstScreen.swift */,
+				B1B87F2E2C9FA7D700319F1B /* SecondScreen.swift */,
 				B6C93AE82C9F626B00EC0BEB /* Accel.swift */,
 				B6C93AE62C9F625800EC0BEB /* APICalls.swift */,
 				B15265152C9F219B00AF2329 /* Files */,
@@ -102,7 +106,6 @@
 			children = (
 				B152651D2C9F25EF00AF2329 /* SpotifyiOS.framework */,
 				B12182042C9E94DD00090D8D /* AppDelegate.swift */,
-				B121820A2C9E94DD00090D8D /* Main.storyboard */,
 				B121820D2C9E94DE00090D8D /* Assets.xcassets */,
 				B121820F2C9E94DE00090D8D /* LaunchScreen.storyboard */,
 				B12182122C9E94DE00090D8D /* Info.plist */,
@@ -172,7 +175,6 @@
 			files = (
 				B121820E2C9E94DE00090D8D /* Assets.xcassets in Resources */,
 				B12182112C9E94DE00090D8D /* Base in Resources */,
-				B121820C2C9E94DD00090D8D /* Base in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -186,9 +188,11 @@
 				B12182092C9E94DD00090D8D /* ViewController.swift in Sources */,
 				B12182052C9E94DD00090D8D /* AppDelegate.swift in Sources */,
 				B6C93AEE2C9F928700EC0BEB /* PlaylistsTableViewController.swift in Sources */,
+				BC43C2E82C9F947C0023B5DD /* FirstScreen.swift in Sources */,
 				B6C93AE92C9F626D00EC0BEB /* Accel.swift in Sources */,
 				B12182072C9E94DD00090D8D /* SceneDelegate.swift in Sources */,
 				B6C93AE72C9F625B00EC0BEB /* APICalls.swift in Sources */,
+				B1B87F2F2C9FA7D700319F1B /* SecondScreen.swift in Sources */,
 				B152651C2C9F244B00AF2329 /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -196,14 +200,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		B121820A2C9E94DD00090D8D /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				B121820B2C9E94DD00090D8D /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		B121820F2C9E94DE00090D8D /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -342,7 +338,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 8LG3532T3K;
+				DEVELOPMENT_TEAM = VAP8J47F2Y;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Stryde",
@@ -351,7 +347,6 @@
 				INFOPLIST_FILE = Stryde/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -360,7 +355,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_BUNDLE_IDENTIFIER = "stevenchang.Stryde-sa";
+				PRODUCT_BUNDLE_IDENTIFIER = stevenchang.Stryde;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "Stryde-Bridging-Header.h";
@@ -378,7 +373,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 8LG3532T3K;
+				DEVELOPMENT_TEAM = Z4Y9GPDY2J;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Stryde",
@@ -387,7 +382,6 @@
 				INFOPLIST_FILE = Stryde/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -396,7 +390,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_BUNDLE_IDENTIFIER = "stevenchang.Stryde-sa";
+				PRODUCT_BUNDLE_IDENTIFIER = "stevenchang.Stryde-gx";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "Stryde-Bridging-Header.h";
