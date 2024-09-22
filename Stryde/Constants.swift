@@ -3,8 +3,8 @@ import Foundation
 
 let accessTokenKey = "access-token-key"
 let redirectUri = URL(string:"stryde://")!
-let spotifyClientId = "a86200cae82e4ce9a0a2bd4998e1e006"
-let spotifyClientSecretKey = "e3bfbce34dff4698a43777dd502958b0"
+let spotifyClientId = "d19ac4f117254b23a6099e324e4fb59b"
+let spotifyClientSecretKey = "892365d1d07a46ada2b230642c91811e"
 
 /*
 Scopes let you specify exactly what types of data your application wants to

@@ -50,7 +50,6 @@
 		B6C93AE62C9F625800EC0BEB /* APICalls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APICalls.swift; sourceTree = "<group>"; };
 		B6C93AE82C9F626B00EC0BEB /* Accel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Accel.swift; sourceTree = "<group>"; };
 		B6C93AED2C9F927B00EC0BEB /* PlaylistsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistsTableViewController.swift; sourceTree = "<group>"; };
-		B6C93AF02C9FA8C000EC0BEB /* Stryde.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = Stryde.xcodeproj; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,7 +67,6 @@
 		B12181F82C9E94DD00090D8D = {
 			isa = PBXGroup;
 			children = (
-				B6C93AF02C9FA8C000EC0BEB /* Stryde.xcodeproj */,
 				B12182032C9E94DD00090D8D /* Stryde */,
 				B12182022C9E94DD00090D8D /* Products */,
 				B15265162C9F21E800AF2329 /* Stryde-Bridging-Header.h */,
