@@ -6,10 +6,16 @@
 //
 
 import UIKit
+import MediaPlayer
 
 class ViewController: UIViewController {
     
     let accel = Accel()
+    let volumeView = MPVolumeView()
+    let audioSession = AVAudioSession.sharedInstance()
+    
+    var vol : Float = 0
+    
 
     // MARK: - Spotify Authorization & Configuration
     var responseCode: String? {
@@ -23,7 +29,10 @@ class ViewController: UIViewController {
                 DispatchQueue.main.async {
                     self.appRemote.connectionParameters.accessToken = accessToken
                     self.appRemote.connect()
-
+                    self.vol = self.audioSession.outputVolume
+                    if let view = self.volumeView.subviews.first as? UISlider {
+                        view.value = 0
+                    }
                 }
             }
         }
@@ -93,6 +102,12 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         style()
         layout()
+        do {
+            try audioSession.setCategory(.playback, options: .mixWithOthers)
+            try audioSession.setActive(true)
+        } catch {
+            print("tff")
+        }
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -119,6 +134,7 @@ class ViewController: UIViewController {
     // MARK: - Actions
     @objc func startTrackingBPM(_ button:UIButton) {
         accel.startTracking()
+        appRemote.playerAPI?.resume(nil)
     }
     
     
@@ -252,6 +268,10 @@ extension ViewController: SPTAppRemoteDelegate {
                 print("Error subscribing to player state:" + error.localizedDescription)
             }
         })
+        self.appRemote.playerAPI?.pause(nil)
+        if let view = self.volumeView.subviews.first as? UISlider {
+            view.value = vol
+        }
         fetchPlayerState()
     }
 
@@ -361,12 +381,14 @@ extension ViewController {
     
     
     func fetchAudioFeatures(for trackId: String, completion: @escaping ([String: Any]?, Error?) -> Void) {
+        
         let url = URL(string: "https://api.spotify.com/v1/audio-features/\(trackId)")!
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         
         // Set the Authorization header with the access token
         guard let accessToken = appRemote.connectionParameters.accessToken else {
+            
             completion(nil, NSError(domain: "com.easyplay", code: 401, userInfo: [NSLocalizedDescriptionKey: "Access token is missing."]))
             return
         }
@@ -377,7 +399,8 @@ extension ViewController {
             guard let data = data,                              // Ensure there is data
                   let response = response as? HTTPURLResponse,  // Ensure we have a valid HTTP response
                   (200 ..< 300) ~= response.statusCode,         // Ensure status code is 2XX
-                  error == nil else {                           // Ensure no error occurred
+                  error == nil else {     
+                // Ensure no error occurred
                 completion(nil, error)
                 return
             }
@@ -397,7 +420,6 @@ extension ViewController {
         let dispatchGroup = DispatchGroup()
         
         var tempDict: [Double: String] = [:]
-        
        for uri in uris {
             dispatchGroup.enter()
             let trackId = uri.replacingOccurrences(of: "spotify:track:", with: "")
@@ -410,7 +432,6 @@ extension ViewController {
                 dispatchGroup.leave()
             }
         }
-        
         dispatchGroup.notify(queue: .main) {
             // Sort the dictionary by tempo and store it in the class property
             self.tempoTrackDictionary = tempDict.sorted(by: { $0.key < $1.key }).reduce(into: [:]) { $0[$1.key] = $1.value }
@@ -437,9 +458,12 @@ extension ViewController {
             "spotify:track:2XU0oxnq2qxCpomAAuJY8K"   // Dance Monkey
         ]
         fetchAndSortTracksByTempo(uris: trackURIs)
+
     }
     
     func playSongClosestTo(tempo inputTempo: Double) {
+
+        
         guard let lastPlayerState = lastPlayerState else {
             print("No player state available.")
             return
@@ -462,13 +486,52 @@ extension ViewController {
                 print("The song is already playing, not restarting.")
                 return
             }
-
-            
-            appRemote.playerAPI?.play(uriForClosestTempo, callback: { (success, error) in
-                if let error = error {
-                    print("Error playing track: \(error.localizedDescription)")
+            vol = audioSession.outputVolume
+            // Fade out
+            let duration=2.5
+            let incrementDuration=0.1
+            let steps=Int(duration/incrementDuration)
+            let start_volume = vol
+            var end_volume = vol - Float(0.5)
+            if (end_volume < 0.1) {
+                end_volume = 0.1
+            }
+            let timm :DispatchTime = .now()
+            var volumeIncrement=(start_volume - end_volume)/Float(steps)
+            for step in 0...steps{
+                DispatchQueue.main.asyncAfter(deadline: timm + incrementDuration * Double(step)){
+                    if let view = self.volumeView.subviews.first as? UISlider {
+                        view.value = Float(step) * -volumeIncrement + start_volume
+                        print(Float(step) * -volumeIncrement + start_volume)
+                    }
                 }
-            })
+                
+            }
+            
+            DispatchQueue.main.asyncAfter(deadline: timm + incrementDuration * Double(steps)) {
+                self.appRemote.playerAPI?.play(uriForClosestTempo, callback: { (success, error) in
+                    if let error = error {
+                        print("Error playing track: \(error.localizedDescription)")
+                    }
+                })
+                self.appRemote.playerAPI?.seek(toPosition: 15000, callback: { (success, error) in
+                    if let error = error {
+                        print("Error seeking: \(error.localizedDescription) ")
+                    }
+                })
+            }
+
+            // Fade in
+            for step in 0...steps{
+                DispatchQueue.main.asyncAfter(deadline: timm + incrementDuration * Double(step) + 2.0) {
+                    if let view = self.volumeView.subviews.first as? UISlider {
+                        view.value = Float(step) * volumeIncrement + end_volume
+                        print(Float(step) * volumeIncrement + end_volume)
+                    }
+                }
+            }
+            
+            
         } else {
             print("No track found with a tempo close to \(inputTempo)")
         }
