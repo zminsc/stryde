@@ -83,7 +83,7 @@ class FirstScreenViewController: UIViewController {
     
     func setupStickman() {
         // Assuming the image is named "runningPerson.png" in your asset catalog
-        runningStickman.image = UIImage(named: "running-stickman")
+        runningStickman.image = UIImage(named: "music-note")
         runningStickman.contentMode = .scaleAspectFit
         runningStickman.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(runningStickman)
@@ -92,8 +92,8 @@ class FirstScreenViewController: UIViewController {
         NSLayoutConstraint.activate([
             runningStickman.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             runningStickman.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -240),
-            runningStickman.widthAnchor.constraint(equalToConstant: 130),
-            runningStickman.heightAnchor.constraint(equalToConstant: 130)
+            runningStickman.widthAnchor.constraint(equalToConstant: 200),
+            runningStickman.heightAnchor.constraint(equalToConstant: 200)
         ])
     }
     
