@@ -20,6 +20,7 @@ class Accel{
     var first = true
     
     @Published var tempo = 0;
+    var lastTempo = 0;
     
     func startAccelerometers() {
         print("here in startAccelerometers")
@@ -51,7 +52,6 @@ class Accel{
     }
     
     func startTracking() {
-        print("helloooooooooooo")
         stopTracking()
         startAccelerometers()
         self.timer = Timer.scheduledTimer(timeInterval: 6.0,
@@ -91,9 +91,12 @@ class Accel{
         }
     }
     
-    func setTempo(input_tempo: Int) {
-        print(input_tempo)
-        self.tempo = input_tempo
+    func setTempo(inputTempo: Int) {
+        if (inputTempo == lastTempo || lastTempo == 0) {
+            self.tempo = inputTempo
+        }
+        lastTempo = inputTempo
+        print(inputTempo)
     }
     
     @objc func postData() {
@@ -104,7 +107,7 @@ class Accel{
             print("POST data")
             APICalls.instance.postData(accelerometerData: self.accelerometerData, setTempo: setTempo)
             
-            let middleInd = self.accelerometerData.count / 2
+            let middleInd = 2 * self.accelerometerData.count / 3
             self.accelerometerData = self.accelerometerData.suffix(middleInd)
         }
     }
