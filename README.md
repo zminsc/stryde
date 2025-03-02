@@ -1,4 +1,6 @@
-# STRYDE
+# stryde
+
+Honorable mention for Most Creative Hack at [PennApps XXIV](https://2024f.pennapps.com/).
 
 Research has demonstrated that music when synchronized with a person's running cadence can provide enhanced psychological and psychophysical benefits during running. As a group of runners, we thought it would be very useful to have an app that would pick up music that matched the current pace of our strides, in order to motivate us to push through our runs. We took this hackathon as an opportunity to explore this interesting idea.
 
